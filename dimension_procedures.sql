@@ -18,46 +18,7 @@ BEGIN
 	WHERE dc.CustomerName != c.CustomerName
 END
 
-GO
-CREATE PROCEDURE sp_PerformETL_Territory
-AS
-BEGIN
-	SET NOCOUNT ON
-	INSERT INTO d_Territory(Country, City, ODB_ID)
-	SELECT co.CountryName, ci.CityName, sp.StateProvinceID
-	FROM WideWorldImporters.Application.StateProvinces sp LEFT JOIN 
-		 WideWorldImporters.Application.Cities ci ON sp.StateProvinceID = ci.StateProvinceID LEFT JOIN
-		 WideWorldImporters.Application.Countries co ON sp.CountryID = co.CountryID LEFT JOIN d_Territory dt ON
-		 ODB_ID = sp.StateProvinceID
-		 WHERE dt.skey IS NULL
 
-	UPDATE d_Territory
-	SET Country = co.CountryName,
-		City = ci.CityName
-	FROM WideWorldImporters.Application.StateProvinces sp LEFT JOIN 
-		 WideWorldImporters.Application.Cities ci ON sp.StateProvinceID = ci.StateProvinceID LEFT JOIN
-		 WideWorldImporters.Application.Countries co ON sp.CountryID = co.CountryID LEFT JOIN 
-		 d_Territory dt ON dt.ODB_ID = sp.StateProvinceID
-	WHERE dt.Country != co.CountryName AND dt.City != ci.CityName
-END
-
--- GO
--- CREATE PROCEDURE sp_PerformETL_PaymentMethod
--- AS
--- BEGIN
--- 	SET NOCOUNT ON
--- 	INSERT INTO d_PaymentMethod(PaymentMethodName, ODB_ID)
--- 	SELECT pm.PaymentMethodName, pm.PaymentMethodID
--- 	FROM WideWorldImporters.Application.PaymentMethods pm  LEFT JOIN d_PaymentMethod dt ON
--- 		 ODB_ID = pm.PaymentMethodID
--- 		 WHERE dt.skey IS NULL
-
--- 	UPDATE d_PaymentMethod
--- 	SET PaymentMethodName = pm.PaymentMethodName
--- 	FROM WideWorldImporters.Application.PaymentMethods pm
--- 	WHERE ODB_ID = pm.PaymentMethodID 
--- 	AND d_PaymentMethod.PaymentMethodName != pm.PaymentMethodName
--- END
 
 GO
 CREATE PROCEDURE sp_PerformETL_TransactionType
@@ -118,22 +79,3 @@ BEGIN
 	AND d_Rate.Rate != r.RateOpen
 END
 
-CREATE PROCEDURE sp_PerformETL_TransactionDate
-AS
-BEGIN
-	SET NOCOUNT ON
-	INSERT INTO d_TransactionDate(TransactionDate, tDate, ODB_ID)
-	SELECT dd.DateKey, ct.TransactionDate, ct.CustomerTransactionID
-	FROM WideWorldImporters.Sales.CustomerTransactions ct 
-	LEFT JOIN d_date dd ON ct.TransactionDate = dd.Date
-	LEFT JOIN d_TransactionDate dt ON dt.tDate = dd.Date
-	WHERE dt.skey IS NULL
-
-	UPDATE d_TransactionDate
-	SET TransactionDate = dd.DateKey,
-		tDate = ct.TransactionDate
-	FROM WideWorldImporters.Sales.CustomerTransactions ct
-	LEFT JOIN d_date dd ON ct.TransactionDate = dd.Date
-	WHERE ODB_ID = ct.CustomerTransactionID
-	AND tDate != ct.TransactionDate
-END

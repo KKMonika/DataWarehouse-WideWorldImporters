@@ -18,19 +18,6 @@ CustomerName varchar(100),
 ODB_ID int -- Sales.Customer
 );
 
-CREATE TABLE d_Territory(
-skey int identity primary key,
-Country varchar(50),
-City varchar(50),
-ODB_ID int -- Application.StateProvinces
-);
-
-CREATE TABLE d_PaymentMethod(
-skey int identity primary key,
-PaymentMethodName varchar(50),
-ODB_ID int -- Application.PaymentMethod
-);
-
 CREATE TABLE d_TransactionType(
 skey int identity primary key,
 TransactionTypeName varchar(50),
@@ -50,12 +37,6 @@ Rate float,
 ODB_ID int --Rate.EurUsdRate
 );
 
-CREATE TABLE d_TransactionDate(
-skey int identity primary key,
-TransactionDate int, --yyyyMMdd
-tDate date,
-ODB_ID int -- Sales.Invoices.InvoiceDate CHANGE TO CUSTOMERTRANSACTIONS!!!!
-);
 
 CREATE TABLE d_date(
 		[DateKey] INT primary key, 
@@ -98,14 +79,11 @@ CREATE TABLE d_date(
 
 CREATE TABLE fact_transaction(
 d_Customer_skey int not null references d_Customer(skey),
-d_Territory_skey int not null references d_Territory(skey),
 d_DeliveryMethod_skey int not null references d_DeliveryMethod(skey),
 d_TransactionType_skey int not null references d_TransactionType(skey),
-d_TransactionDate_skey int not null references d_TransactionDate(skey),
 d_Rate_skey int not null references d_Rate(skey),
 Year int not null,
 Quarter int not null,
-NumberOfTransactions int not null,
 Quantity int not null,
 UnitPrice int not null,
 AmountExcludingTax decimal not null,
@@ -116,14 +94,11 @@ Commisison decimal not null --lineprofit InvoiceLines
 
 CREATE TABLE fact_transaction_temp(
 d_Customer_skey int not null references d_Customer(skey),
-d_Territory_skey int not null references d_Territory(skey),
 d_DeliveryMethod_skey int not null references d_DeliveryMethod(skey),
 d_TransactionType_skey int not null references d_TransactionType(skey),
-d_TransactionDate_skey int not null references d_TransactionDate(skey),
 d_Rate_skey int not null references d_Rate(skey),
 Year int not null,
 Quarter int not null,
-NumberOfTransactions int not null,
 Quantity int not null,
 UnitPrice int not null,
 AmountExcludingTax decimal not null,
