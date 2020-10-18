@@ -11,26 +11,27 @@ RateVolume int,
 )
 
 
+CREATE SCHEMA dw;
 
-CREATE TABLE d_Customer(
+CREATE TABLE dw.d_Customer(
 skey int identity primary key,
 CustomerName varchar(100),
 ODB_ID int -- Sales.Customer
 );
 
-CREATE TABLE d_TransactionType(
+CREATE TABLE dw.d_TransactionType(
 skey int identity primary key,
 TransactionTypeName varchar(50),
 ODB_ID int --Application.TransactionTypes
 );
 
-CREATE TABLE d_DeliveryMethod(
+CREATE TABLE dw.d_DeliveryMethod(
 skey int identity primary key,
 DeliveryMethodName varchar(50),
 ODB_ID int --Application.DeliveryMethods
 );
 
-CREATE TABLE d_Rate(
+CREATE TABLE dw.d_Rate(
 skey int identity primary key,
 RateDate date,
 Rate float,
@@ -38,7 +39,7 @@ ODB_ID int --Rate.EurUsdRate
 );
 
 
-CREATE TABLE d_date(
+CREATE TABLE dw.d_date(
 		[DateKey] INT primary key, 
 		[Date] DATETIME,
 		[FullDateUK] CHAR(10), -- Date in dd-MM-yyyy format
@@ -77,31 +78,37 @@ CREATE TABLE d_date(
 		[HolidayUK] VARCHAR(50) Null --Name of Holiday in UK
 );
 
-CREATE TABLE fact_transaction(
-d_Customer_skey int not null references d_Customer(skey),
-d_DeliveryMethod_skey int not null references d_DeliveryMethod(skey),
-d_TransactionType_skey int not null references d_TransactionType(skey),
-d_Rate_skey int not null references d_Rate(skey),
+CREATE TABLE dw.fact_transaction(
+d_Customer_skey int not null references dw.d_Customer(skey),
+d_DeliveryMethod_skey int not null references dw.d_DeliveryMethod(skey),
+d_TransactionType_skey int not null references dw.d_TransactionType(skey),
+d_Rate_skey int not null references dw.d_Rate(skey),
 Year int not null,
 Quarter int not null,
 Quantity int not null,
 UnitPrice int not null,
 AmountExcludingTax decimal not null,
 TaxAmount decimal not null,
-Commisison decimal not null --lineprofit InvoiceLines
+Commisison decimal not null,
+TotalPrice decimal not null, 
+EuroCommision decimal not null, 
+EuroTotalPrice decimal not null --lineprofit InvoiceLines
 );
 
 
-CREATE TABLE fact_transaction_temp(
-d_Customer_skey int not null references d_Customer(skey),
-d_DeliveryMethod_skey int not null references d_DeliveryMethod(skey),
-d_TransactionType_skey int not null references d_TransactionType(skey),
-d_Rate_skey int not null references d_Rate(skey),
+CREATE TABLE dw.fact_transaction_temp(
+d_Customer_skey int not null references dw.d_Customer(skey),
+d_DeliveryMethod_skey int not null references dw.d_DeliveryMethod(skey),
+d_TransactionType_skey int not null references  dw.d_TransactionType(skey),
+d_Rate_skey int not null references dw.d_Rate(skey),
 Year int not null,
 Quarter int not null,
 Quantity int not null,
 UnitPrice int not null,
 AmountExcludingTax decimal not null,
 TaxAmount decimal not null,
-Commisison decimal not null --lineprofit InvoiceLines
+Commisison decimal not null,
+TotalPrice decimal not null, 
+EuroCommision decimal not null, 
+EuroTotalPrice decimal not null --lineprofit InvoiceLines
 );

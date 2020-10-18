@@ -95,7 +95,7 @@ BEGIN
 
 /* Populate Your Dimension Table with values*/
 	
-	INSERT INTO d_date
+	INSERT INTO dw.d_date
 	SELECT
 		
 		CONVERT (char(8),@CurrentDate,112) as DateKey,
@@ -193,48 +193,48 @@ END
 /*Update HOLIDAY fields of UK as per Govt. Declaration of National Holiday*/
 	
 -- Good Friday  April 18 
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUK = 'Good Friday'
 	WHERE [Month] = 4 AND [DayOfMonth]  = 18
 
 -- Easter Monday  April 21 
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUK = 'Easter Monday'
 	WHERE [Month] = 4 AND [DayOfMonth]  = 21
 
 -- Early May Bank Holiday   May 5 
-   UPDATE [dbo].[d_date]
+   UPDATE dw.d_date
 		SET HolidayUK = 'Early May Bank Holiday'
 	WHERE [Month] = 5 AND [DayOfMonth]  = 5
 
 -- Spring Bank Holiday  May 26 
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUK = 'Spring Bank Holiday'
 	WHERE [Month] = 5 AND [DayOfMonth]  = 26
 
 -- Summer Bank Holiday  August 25 
-    UPDATE [dbo].[d_date]
+    UPDATE dw.d_date
 		SET HolidayUK = 'Summer Bank Holiday'
 	WHERE [Month] = 8 AND [DayOfMonth]  = 25
 
 -- Boxing Day  December 26  	
-    UPDATE [dbo].[d_date]
+    UPDATE dw.d_date
 		SET HolidayUK = 'Boxing Day'
 	WHERE [Month] = 12 AND [DayOfMonth]  = 26	
 
 --CHRISTMAS
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUK = 'Christmas Day'
 	WHERE [Month] = 12 AND [DayOfMonth]  = 25
 
 --New Years Day
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUK  = 'New Year''s Day'
 	WHERE [Month] = 1 AND [DayOfMonth] = 1
 
 --Update flag for UK Holidays 1= Holiday, 0=No Holiday
 	
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET IsHolidayUK  = CASE WHEN HolidayUK   IS NULL 
 		THEN 0 WHEN HolidayUK   IS NOT NULL THEN 1 END
 		
@@ -244,7 +244,7 @@ END
 /*Update HOLIDAY Field of USA In dimension*/
 	
  	/*THANKSGIVING - Fourth THURSDAY in November*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Thanksgiving Day'
 	WHERE
 		[Month] = 11 
@@ -252,30 +252,30 @@ END
 		AND DayOfWeekInMonth = 4
 
 	/*CHRISTMAS*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Christmas Day'
 		
 	WHERE [Month] = 12 AND [DayOfMonth]  = 25
 
 	/*4th of July*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Independance Day'
 	WHERE [Month] = 7 AND [DayOfMonth] = 4
 
 	/*New Years Day*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'New Year''s Day'
 	WHERE [Month] = 1 AND [DayOfMonth] = 1
 
 	/*Memorial Day - Last Monday in May*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Memorial Day'
-	FROM [dbo].[d_date]
+	FROM dw.d_date
 	WHERE DateKey IN 
 		(
 		SELECT
 			MAX(DateKey)
-		FROM [dbo].[d_date]
+		FROM dw.d_date
 		WHERE
 			[MonthName] = 'May'
 			AND [DayOfWeekUSA]  = 'Monday'
@@ -285,14 +285,14 @@ END
 		)
 
 	/*Labor Day - First Monday in September*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Labor Day'
-	FROM [dbo].[d_date]
+	FROM dw.d_date
 	WHERE DateKey IN 
 		(
 		SELECT
 			MIN(DateKey)
-		FROM [dbo].[d_date]
+		FROM dw.d_date
 		WHERE
 			[MonthName] = 'September'
 			AND [DayOfWeekUSA] = 'Monday'
@@ -302,21 +302,21 @@ END
 		)
 
 	/*Valentine's Day*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Valentine''s Day'
 	WHERE
 		[Month] = 2 
 		AND [DayOfMonth] = 14
 
 	/*Saint Patrick's Day*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Saint Patrick''s Day'
 	WHERE
 		[Month] = 3
 		AND [DayOfMonth] = 17
 
 	/*Martin Luthor King Day - Third Monday in January starting in 1983*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Martin Luthor King Jr Day'
 	WHERE
 		[Month] = 1
@@ -325,7 +325,7 @@ END
 		AND DayOfWeekInMonth = 3
 
 	/*President's Day - Third Monday in February*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'President''s Day'
 	WHERE
 		[Month] = 2
@@ -333,7 +333,7 @@ END
 		AND DayOfWeekInMonth = 3
 
 	/*Mother's Day - Second Sunday of May*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Mother''s Day'
 	WHERE
 		[Month] = 5
@@ -341,7 +341,7 @@ END
 		AND DayOfWeekInMonth = 2
 
 	/*Father's Day - Third Sunday of June*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Father''s Day'
 	WHERE
 		[Month] = 6
@@ -349,7 +349,7 @@ END
 		AND DayOfWeekInMonth = 3
 
 	/*Halloween 10/31*/
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 		SET HolidayUSA = 'Halloween'
 	WHERE
 		[Month] = 10
@@ -365,7 +365,7 @@ END
 			DateKey,
 			[Year],
 			[DayOfMonth] 
-		FROM [dbo].[d_date]
+		FROM dw.d_date
 		WHERE
 			[Month] = 11
 			AND [DayOfWeekUSA] = 'Monday'
@@ -409,16 +409,16 @@ END
 			SELECT @CURRENTYEAR = @CURRENTYEAR + 1
 		END
 
-		UPDATE [dbo].[d_date]
+		UPDATE dw.d_date
 			SET HolidayUSA  = 'Election Day'				
-		FROM [dbo].[d_date] DT
+		FROM dw.d_date DT
 			JOIN @Holidays HL ON (HL.DateID + 1) = DT.DateKey
 		WHERE
 			[Week] = 1
 	END
 	--set flag for USA holidays in Dimension
-	UPDATE [dbo].[d_date]
+	UPDATE dw.d_date
 SET IsHolidayUSA = CASE WHEN HolidayUSA  IS NULL THEN 0 WHEN HolidayUSA  IS NOT NULL THEN 1 END
 /*****************************************************************************************/
 
-SELECT * FROM [dbo].[d_date]
+SELECT * FROM dw.d_date]
