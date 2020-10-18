@@ -1,3 +1,17 @@
+CREATE SCHEMA Rate;
+
+CREATE TABLE Rate.EurUsdRate(
+RateDate date,
+RateOpen double precision,
+RateHigh double precision,
+RateLow double precision,
+RateClose double precision,
+RateAdjClose double precision,
+RateVolume int,
+)
+
+
+
 CREATE TABLE d_Customer(
 skey int identity primary key,
 CustomerName varchar(100),
@@ -86,7 +100,6 @@ CREATE TABLE fact_transaction(
 d_Customer_skey int not null references d_Customer(skey),
 d_Territory_skey int not null references d_Territory(skey),
 d_DeliveryMethod_skey int not null references d_DeliveryMethod(skey),
-d_PaymentMethod_skey int not null references d_PaymentMethod(skey),
 d_TransactionType_skey int not null references d_TransactionType(skey),
 d_TransactionDate_skey int not null references d_TransactionDate(skey),
 d_Rate_skey int not null references d_Rate(skey),
@@ -94,9 +107,9 @@ Year int not null,
 Quarter int not null,
 NumberOfTransactions int not null,
 Quantity int not null,
+UnitPrice int not null,
 AmountExcludingTax decimal not null,
 TaxAmount decimal not null,
-TransactionAmount decimal not null,
 Commisison decimal not null --lineprofit InvoiceLines
 );
 
@@ -105,7 +118,6 @@ CREATE TABLE fact_transaction_temp(
 d_Customer_skey int not null references d_Customer(skey),
 d_Territory_skey int not null references d_Territory(skey),
 d_DeliveryMethod_skey int not null references d_DeliveryMethod(skey),
-d_PaymentMethod_skey int not null references d_PaymentMethod(skey),
 d_TransactionType_skey int not null references d_TransactionType(skey),
 d_TransactionDate_skey int not null references d_TransactionDate(skey),
 d_Rate_skey int not null references d_Rate(skey),
@@ -113,8 +125,8 @@ Year int not null,
 Quarter int not null,
 NumberOfTransactions int not null,
 Quantity int not null,
+UnitPrice int not null,
 AmountExcludingTax decimal not null,
 TaxAmount decimal not null,
-TransactionAmount decimal not null,
 Commisison decimal not null --lineprofit InvoiceLines
 );
