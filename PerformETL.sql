@@ -8,11 +8,12 @@ SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
 
 
 --PERFORM ETL HERE
-EXEC sp_PerformETL_Customer
+DECLARE @NUMBEROFRECORDS int
+EXEC @NUMBEROFRECORDS =  sp_PerformETL_Customer
 
 UPDATE ETL_process_log
 SET ETL_end=getdate(),
-    NumberOfRecords = CONVERT(int, (SELECT COUNT(*) FROM d_Customer))
+    NumberOfRecords = @NUMBEROFRECORDS
 WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
 
 SELECT * FROM vw_ETL_Process_log
@@ -27,11 +28,12 @@ SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
 
 
 --PERFORM ETL HERE
-EXEC sp_PerformETL_TransactionType
+DECLARE @NUMBEROFRECORDS int
+EXEC @NUMBEROFRECORDS =  sp_PerformETL_TransactionType
 
 UPDATE ETL_process_log
 SET ETL_end=getdate(),
-    NumberOfRecords = CONVERT(int, (SELECT COUNT(*) FROM d_TransactionType))
+    NumberOfRecords = @NUMBEROFRECORDS
 WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
 
 SELECT * FROM vw_ETL_Process_log
@@ -46,11 +48,12 @@ SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
 
 
 --PERFORM ETL HERE
-EXEC sp_PerformETL_DeliveryMethod
+DECLARE @NUMBEROFRECORDS int
+EXEC @NUMBEROFRECORDS =  sp_PerformETL_DeliveryMethod
 
 UPDATE ETL_process_log
 SET ETL_end=getdate(),
-    NumberOfRecords = CONVERT(int, (SELECT COUNT(*) FROM d_DeliveryMethod))
+    NumberOfRecords = @NUMBEROFRECORDS
 WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
 
 SELECT * FROM vw_ETL_Process_log
@@ -65,11 +68,12 @@ SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
 
 
 --PERFORM ETL HERE
-EXEC sp_PerformETL_Rate
+DECLARE @NUMBEROFRECORDS int
+EXEC @NUMBEROFRECORDS =  sp_PerformETL_Rate
 
 UPDATE ETL_process_log
 SET ETL_end=getdate(),
-    NumberOfRecords = CONVERT(int, (SELECT COUNT(*) FROM d_Rate))
+    NumberOfRecords = @NUMBEROFRECORDS
 WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
 
 SELECT * FROM vw_ETL_Process_log
@@ -84,11 +88,12 @@ SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
 
 
 --PERFORM ETL HERE
-EXEC sp_PerformETL
+DECLARE @NUMBEROFRECORDS int
+EXEC @NUMBEROFRECORDS =  sp_PerformETL
 
 UPDATE ETL_process_log
 SET ETL_end=getdate(),
-    NumberOfRecords = CONVERT(int, (SELECT COUNT(*) FROM fact_transaction))
+    NumberOfRecords = @NUMBEROFRECORDS
 WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
 
 
