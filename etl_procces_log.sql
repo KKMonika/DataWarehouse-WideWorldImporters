@@ -1,16 +1,100 @@
-CREATE TABLE ETL_process_log(Id int identity,
-TableName varchar(200) not null,
-ETL_start datetime default getdate(),
-ETL_end datetime,
-NumberOfRecords int
-);
+--POPULATING THE DATA WAREHOUSE
 
-CREATE VIEW vw_ETL_process_log AS
-SELECT t.*, datediff(MILLISECOND,t.ETL_start, ETL_end)/1000.0 Duration
-FROM ETL_process_log t
-
-
+INSERT INTO ETL_process_log(TableName)
+VALUES ('d_Customer')
 DECLARE @ID int
-SET @ID = (SELECT count(*) FROM ETL_process_log)+1
+SELECT @ID = @@IDENTITY
+SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
 
-PRINT(@ID)
+
+--PERFORM ETL HERE
+DECLARE @NUMBEROFRECORDS int
+EXEC @NUMBEROFRECORDS =  sp_PerformETL_Customer
+
+UPDATE ETL_process_log
+SET ETL_end=getdate(),
+    NumberOfRecords = @NUMBEROFRECORDS
+WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
+
+SELECT * FROM vw_ETL_Process_log
+
+
+GO
+INSERT INTO ETL_process_log(TableName)
+VALUES ('d_TransactionType')
+DECLARE @ID int
+SELECT @ID = @@IDENTITY
+SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
+
+
+--PERFORM ETL HERE
+DECLARE @NUMBEROFRECORDS int
+EXEC @NUMBEROFRECORDS =  sp_PerformETL_TransactionType
+
+UPDATE ETL_process_log
+SET ETL_end=getdate(),
+    NumberOfRecords = @NUMBEROFRECORDS
+WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
+
+SELECT * FROM vw_ETL_Process_log
+
+
+GO
+INSERT INTO ETL_process_log(TableName)
+VALUES ('d_DeliveryMethod')
+DECLARE @ID int
+SELECT @ID = @@IDENTITY
+SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
+
+
+--PERFORM ETL HERE
+DECLARE @NUMBEROFRECORDS int
+EXEC @NUMBEROFRECORDS =  sp_PerformETL_DeliveryMethod
+
+UPDATE ETL_process_log
+SET ETL_end=getdate(),
+    NumberOfRecords = @NUMBEROFRECORDS
+WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
+
+SELECT * FROM vw_ETL_Process_log
+
+
+GO
+INSERT INTO ETL_process_log(TableName)
+VALUES ('d_Rate')
+DECLARE @ID int
+SELECT @ID = @@IDENTITY
+SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
+
+
+--PERFORM ETL HERE
+DECLARE @NUMBEROFRECORDS int
+EXEC @NUMBEROFRECORDS =  sp_PerformETL_Rate
+
+UPDATE ETL_process_log
+SET ETL_end=getdate(),
+    NumberOfRecords = @NUMBEROFRECORDS
+WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
+
+SELECT * FROM vw_ETL_Process_log
+
+
+GO
+INSERT INTO ETL_process_log(TableName)
+VALUES ('fact_transaction')
+DECLARE @ID int
+SELECT @ID = @@IDENTITY
+SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
+
+
+--PERFORM ETL HERE
+DECLARE @NUMBEROFRECORDS int
+EXEC @NUMBEROFRECORDS =  sp_PerformETL
+
+UPDATE ETL_process_log
+SET ETL_end=getdate(),
+    NumberOfRecords = @NUMBEROFRECORDS
+WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
+
+
+SELECT * FROM vw_ETL_Process_log
