@@ -1,16 +1,70 @@
-
 CREATE PROCEDURE sp_PerformETL
 AS
 BEGIN
 	SET NOCOUNT ON
 
-	EXEC sp_PerformETL_Customer
+	INSERT INTO ETL_process_log(TableName)
+	VALUES ('d_Customer')
+	DECLARE @ID int
+	SELECT @ID = @@IDENTITY
+	SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
 
-	EXEC sp_PerformETL_Territory
-	EXEC sp_PerformETL_DeliveryMethod
-	EXEC sp_PerformETL_TransactionType
-	EXEC sp_PerformETL_Rate
-	EXEC sp_PerformETL_TransactionDate
+
+	--PERFORM ETL HERE
+	DECLARE @NUMBEROFRECORDS int
+	EXEC @NUMBEROFRECORDS =  sp_PerformETL_Customer
+
+	UPDATE ETL_process_log
+	SET ETL_end=getdate(),
+	    NumberOfRecords = @NUMBEROFRECORDS
+	WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
+
+	
+	INSERT INTO ETL_process_log(TableName)
+	VALUES ('d_TransactionType')
+	SELECT @ID = @@IDENTITY
+	SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
+
+
+	--PERFORM ETL HERE
+	EXEC @NUMBEROFRECORDS =  sp_PerformETL_TransactionType
+
+	UPDATE ETL_process_log
+	SET ETL_end=getdate(),
+	    NumberOfRecords = @NUMBEROFRECORDS
+	WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
+
+
+	INSERT INTO ETL_process_log(TableName)
+	VALUES ('d_DeliveryMethod')
+	SELECT @ID = @@IDENTITY
+	SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
+
+
+	--PERFORM ETL HERE
+	EXEC @NUMBEROFRECORDS =  sp_PerformETL_DeliveryMethod
+
+	UPDATE ETL_process_log
+	SET ETL_end=getdate(),
+	    NumberOfRecords = @NUMBEROFRECORDS
+	WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
+	
+
+	INSERT INTO ETL_process_log(TableName)
+	VALUES ('d_Rate')
+	SELECT @ID = @@IDENTITY
+	SET @ID = (SELECT COUNT(*) FROM ETL_process_log)+1
+
+
+	--PERFORM ETL HERE
+	EXEC @NUMBEROFRECORDS =  sp_PerformETL_Rate
+
+	UPDATE ETL_process_log
+	SET ETL_end=getdate(),
+	    NumberOfRecords = @NUMBEROFRECORDS
+	WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
+
+
 
 	IF object_id('tempdb.dbo.#tmp_all') IS NOT NULL DROP TABLE #tmp_all
 	IF object_id('tempdb.dbo.#tmp_inv') IS NOT NULL DROP TABLE #tmp_inv
@@ -55,6 +109,9 @@ BEGIN
 		LEFT JOIN d_TransactionType tt ON tt.ODB_ID = t.TransactionTypeID
 		LEFT JOIN d_Rate r ON r.ODB_ID = t.RateID
 		GROUP BY dc.skey, dm.skey, tt.skey, r.skey, t.Year, t.Quarter
+		SET @NUMBEROFRECORDS = @@ROWCOUNT
+
+
 
 
 	BEGIN TRANSACTION SwapTablesForETL
@@ -76,5 +133,8 @@ BEGIN
 	-- STEP 4: If we reach this point, the commands completedsuccessfully
 	-- Commit the transaction....
 	COMMIT TRANSACTION SwapTablesForETL;
+
+	RETURN @NUMBEROFRECORDS
+
 
 END

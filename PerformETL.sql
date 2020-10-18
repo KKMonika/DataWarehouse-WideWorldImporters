@@ -94,7 +94,7 @@ EXEC @NUMBEROFRECORDS =  sp_PerformETL
 UPDATE ETL_process_log
 SET ETL_end=getdate(),
     NumberOfRecords = @NUMBEROFRECORDS
-WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))
+WHERE Id= CONVERT(int, (SELECT COUNT(*) FROM ETL_process_log))-4
 
 
 SELECT * FROM vw_ETL_Process_log
